@@ -6,7 +6,7 @@ A simple Library Management System built with **Laravel 12** using the MVC archi
 
 ## Group Members
 
-**Year & Section:** *(e.g. BSIT 3-B)*
+**Year & Section:** *(BSIT 3-B)*
 
 | #  | Name                   |
 |----|------------------------|
