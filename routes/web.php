@@ -9,6 +9,14 @@ Route::get('/', function () {
     return redirect()->route('books.index');
 });
 
+// Language switcher
+Route::get('/language/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'fil', 'ja'])) {
+        session()->put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('language.switch');
+
 // Book resource routes (CRUD)
 Route::resource('books', BookController::class);
 

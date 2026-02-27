@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'All Books')
+@section('title', __('All Books'))
 
 @section('content')
     {{-- Page Header --}}
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
-            <h1 class="page-title">Book Collection</h1>
-            <p class="text-muted mt-1 text-sm">Browse, search, and manage your library catalog.</p>
+            <h1 class="page-title">{{ __('Book Collection') }}</h1>
+            <p class="text-muted mt-1 text-sm">{{ __('Browse, search, and manage your library catalog.') }}</p>
         </div>
         <a href="{{ route('books.create') }}" class="btn-primary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            Add New Book
+            {{ __('Add New Book') }}
         </a>
     </div>
 
@@ -23,12 +23,12 @@
                 <input type="text"
                        name="search"
                        value="{{ request('search') }}"
-                       placeholder="Search by title, author, or ISBN..."
-                       class="form-input !pl-10">
+                       placeholder="{{ __('Search by title, author, or ISBN...') }}"
+                       class="form-input pl-10!">
             </div>
-            <button type="submit" class="btn-primary">Search</button>
+            <button type="submit" class="btn-primary">{{ __('Search') }}</button>
             @if(request('search'))
-                <a href="{{ route('books.index') }}" class="btn-ghost">Clear</a>
+                <a href="{{ route('books.index') }}" class="btn-ghost">{{ __('Clear') }}</a>
             @endif
         </form>
     </div>
@@ -56,16 +56,16 @@
                         </p>
 
                         {{-- ISBN --}}
-                        <p class="text-xs text-library-300 font-mono tracking-wide">ISBN {{ $book->isbn }}</p>
+                        <p class="text-xs text-library-300 font-mono tracking-wide">{{ __('ISBN') }} {{ $book->isbn }}</p>
                     </div>
 
                     {{-- Card footer --}}
                     <div class="px-5 py-3 bg-library-50/50 border-t border-library-100 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-muted hover:text-library-700">View</span>
-                            <span class="text-xs text-muted hover:text-library-700">Edit</span>
+                            <span class="text-xs text-muted hover:text-library-700">{{ __('View') }}</span>
+                            <span class="text-xs text-muted hover:text-library-700">{{ __('Edit') }}</span>
                             @if($book->available > 0)
-                                <span class="text-xs text-success font-medium">Borrow</span>
+                                <span class="text-xs text-success font-medium">{{ __('Borrow') }}</span>
                             @endif
                         </div>
                         <svg class="w-4 h-4 text-library-300 group-hover:text-library-500 group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
@@ -83,11 +83,11 @@
             <div class="w-16 h-16 rounded-full bg-library-100 flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-library-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             </div>
-            <h3 class="section-title mb-1">No books found</h3>
-            <p class="text-sm text-muted mb-4">Your collection is empty. Add your first title to get started.</p>
+            <h3 class="section-title mb-1">{{ __('No books found') }}</h3>
+            <p class="text-sm text-muted mb-4">{{ __('Your collection is empty. Add your first title to get started.') }}</p>
             <a href="{{ route('books.create') }}" class="btn-primary">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                Add First Book
+                {{ __('Add First Book') }}
             </a>
         </div>
     @endif

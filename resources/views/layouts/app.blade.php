@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="{{ app()->getLocale() }}" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Library') — Athenaeum</title>
+    <title>@yield('title', __('Library')) — Athenaeum</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
                                   {{ request()->routeIs('books.*') ? 'bg-library-100 text-library-800' : 'text-muted hover:text-library-800 hover:bg-library-50' }}">
                             <span class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                                Books
+                                {{ __('Books') }}
                             </span>
                         </a>
                         <a href="{{ route('borrowings.index') }}"
@@ -41,13 +41,38 @@
                                   {{ request()->routeIs('borrowings.*') ? 'bg-library-100 text-library-800' : 'text-muted hover:text-library-800 hover:bg-library-50' }}">
                             <span class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                                Borrowings
+                                {{ __('Borrowings') }}
                             </span>
                         </a>
                         <div class="w-px h-6 bg-library-200 mx-2"></div>
-                        <a href="{{ route('borrowings.create') }}" class="btn-primary text-sm !py-2 !px-4">
+
+                        {{-- Language Switcher --}}
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button @click="open = !open" class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted hover:text-library-800 hover:bg-library-50 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                                @php
+                                    $localeLabels = ['en' => 'EN', 'fil' => 'FIL', 'ja' => 'JA'];
+                                @endphp
+                                {{ $localeLabels[app()->getLocale()] ?? 'EN' }}
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-library-100 py-1 z-50" style="display: none;">
+                                <a href="{{ route('language.switch', 'en') }}" class="flex items-center gap-2 px-3 py-2 text-sm {{ app()->getLocale() === 'en' ? 'text-library-700 font-semibold bg-library-50' : 'text-muted hover:bg-library-50 hover:text-ink' }} transition-colors">
+                                    <span class="w-5 text-center">🇺🇸</span> English
+                                </a>
+                                <a href="{{ route('language.switch', 'fil') }}" class="flex items-center gap-2 px-3 py-2 text-sm {{ app()->getLocale() === 'fil' ? 'text-library-700 font-semibold bg-library-50' : 'text-muted hover:bg-library-50 hover:text-ink' }} transition-colors">
+                                    <span class="w-5 text-center">🇵🇭</span> Filipino
+                                </a>
+                                <a href="{{ route('language.switch', 'ja') }}" class="flex items-center gap-2 px-3 py-2 text-sm {{ app()->getLocale() === 'ja' ? 'text-library-700 font-semibold bg-library-50' : 'text-muted hover:bg-library-50 hover:text-ink' }} transition-colors">
+                                    <span class="w-5 text-center">🇯🇵</span> 日本語
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="w-px h-6 bg-library-200 mx-1"></div>
+                        <a href="{{ route('borrowings.create') }}" class="btn-primary text-sm py-2! px-4!">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                            Borrow Book
+                            {{ __('Borrow Book') }}
                         </a>
                     </nav>
 
@@ -59,9 +84,14 @@
 
                 {{-- Mobile Nav --}}
                 <div id="mobile-menu" class="hidden sm:hidden pb-4 space-y-1">
-                    <a href="{{ route('books.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('books.*') ? 'bg-library-100 text-library-800' : 'text-muted' }}">Books</a>
-                    <a href="{{ route('borrowings.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('borrowings.*') ? 'bg-library-100 text-library-800' : 'text-muted' }}">Borrowings</a>
-                    <a href="{{ route('borrowings.create') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-library-700">+ Borrow Book</a>
+                    <a href="{{ route('books.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('books.*') ? 'bg-library-100 text-library-800' : 'text-muted' }}">{{ __('Books') }}</a>
+                    <a href="{{ route('borrowings.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('borrowings.*') ? 'bg-library-100 text-library-800' : 'text-muted' }}">{{ __('Borrowings') }}</a>
+                    <a href="{{ route('borrowings.create') }}" class="block px-3 py-2 rounded-lg text-sm font-medium text-library-700">+ {{ __('Borrow Book') }}</a>
+                    <div class="flex items-center gap-2 px-3 py-2">
+                        <a href="{{ route('language.switch', 'en') }}" class="text-xs px-2 py-1 rounded {{ app()->getLocale() === 'en' ? 'bg-library-200 text-library-800 font-bold' : 'text-muted' }}">🇺🇸 EN</a>
+                        <a href="{{ route('language.switch', 'fil') }}" class="text-xs px-2 py-1 rounded {{ app()->getLocale() === 'fil' ? 'bg-library-200 text-library-800 font-bold' : 'text-muted' }}">🇵🇭 FIL</a>
+                        <a href="{{ route('language.switch', 'ja') }}" class="text-xs px-2 py-1 rounded {{ app()->getLocale() === 'ja' ? 'bg-library-200 text-library-800 font-bold' : 'text-muted' }}">🇯🇵 JA</a>
+                    </div>
                 </div>
             </div>
         </header>
@@ -86,7 +116,7 @@
                 <div class="bg-red-50 border border-red-200 text-red-800 px-5 py-3.5 rounded-xl mb-4">
                     <div class="flex items-center gap-2 mb-1">
                         <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                        <p class="text-sm font-bold">Please fix the following errors:</p>
+                        <p class="text-sm font-bold">{{ __('Please fix the following errors:') }}</p>
                     </div>
                     <ul class="list-disc list-inside text-sm ml-7 space-y-0.5">
                         @foreach($errors->all() as $error)
@@ -106,7 +136,7 @@
         <footer class="border-t border-library-100 bg-white/50 mt-auto">
             <div class="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between">
                 <p class="text-xs text-muted">
-                    &copy; {{ date('Y') }} Athenaeum &middot; Built with Laravel
+                    &copy; {{ date('Y') }} Athenaeum &middot; {{ __('Built with Laravel') }}
                 </p>
                 <div class="flex items-center gap-1 text-xs text-library-300">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
