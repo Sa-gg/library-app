@@ -6,6 +6,107 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+    --color-library-50: #fdf8f0;
+    --color-library-100: #f5ead6;
+    --color-library-200: #ebdab8;
+    --color-library-300: #d4b883;
+    --color-library-400: #c49a5c;
+    --color-library-500: #a67c3d;
+    --color-library-600: #8b6530;
+    --color-library-700: #6e4e26;
+    --color-library-800: #4a3419;
+    --color-library-900: #2d1f0f;
+
+    --color-parchment: #faf6ef;
+    --color-ink: #1a1410;
+    --color-muted: #6b5e50;
+    --color-accent: #b8860b;
+    --color-success: #2d6a4f;
+    --color-danger: #9b2226;
+    --color-warning: #b07d2b;
+}
+
+@layer base {
+    body {
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center gap-2 bg-library-700 text-white px-5 py-2.5 rounded-lg font-medium
+               hover:bg-library-800 active:bg-library-900 transition-all duration-200 shadow-sm hover:shadow-md;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center gap-2 bg-library-100 text-library-800 px-5 py-2.5 rounded-lg font-medium
+               hover:bg-library-200 active:bg-library-300 transition-all duration-200 border border-library-200;
+    }
+
+    .btn-success {
+        @apply inline-flex items-center gap-2 bg-success text-white px-5 py-2.5 rounded-lg font-medium
+               hover:opacity-90 active:opacity-80 transition-all duration-200 shadow-sm;
+    }
+
+    .btn-danger {
+        @apply inline-flex items-center gap-2 bg-danger text-white px-5 py-2.5 rounded-lg font-medium
+               hover:opacity-90 active:opacity-80 transition-all duration-200 shadow-sm;
+    }
+
+    .btn-warning {
+        @apply inline-flex items-center gap-2 bg-warning text-white px-5 py-2.5 rounded-lg font-medium
+               hover:opacity-90 active:opacity-80 transition-all duration-200 shadow-sm;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center gap-2 text-muted px-4 py-2.5 rounded-lg font-medium
+               hover:bg-library-100 hover:text-library-800 transition-all duration-200;
+    }
+
+    .card {
+        @apply bg-white rounded-2xl shadow-sm border border-library-100 overflow-hidden;
+    }
+
+    .form-input {
+        @apply w-full border border-library-200 rounded-xl px-4 py-3 bg-white text-ink
+               placeholder-library-300 transition-all duration-200
+               focus:outline-none focus:ring-2 focus:ring-library-400/40 focus:border-library-400;
+    }
+
+    .form-label {
+        @apply block text-sm font-semibold text-library-700 mb-1.5 tracking-wide uppercase;
+    }
+
+    .badge-available {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200;
+    }
+
+    .badge-unavailable {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide bg-red-50 text-red-700 ring-1 ring-red-200;
+    }
+
+    .badge-overdue {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide bg-red-50 text-red-700 ring-1 ring-red-200;
+    }
+
+    .badge-borrowed {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide bg-amber-50 text-amber-700 ring-1 ring-amber-200;
+    }
+
+    .badge-returned {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200;
+    }
+
+    .page-title {
+        @apply text-3xl font-bold text-ink font-serif tracking-tight;
+    }
+
+    .section-title {
+        @apply text-xl font-bold text-ink font-serif;
+    }
 }
