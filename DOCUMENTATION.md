@@ -1,6 +1,6 @@
-# 📚 Library App — Laravel MVC Guide
+# 📚 Athenaeum — Library App Documentation
 
-A step-by-step guide to building a Library Management application using **Laravel 12** with the **MVC (Model-View-Controller)** architecture pattern. No authentication required.
+A step-by-step guide to building a Library Management application using **Laravel 12** with the **MVC (Model-View-Controller)** architecture pattern. Features a custom "Athenaeum" design theme, multilingual support (EN/FIL/JA), and Tailwind CSS v4 compiled offline via Vite.
 
 ---
 
@@ -16,10 +16,13 @@ A step-by-step guide to building a Library Management application using **Larave
 8. [Step 4 — Create Controllers (C in MVC)](#step-4--create-controllers-c-in-mvc)
 9. [Step 5 — Define Routes](#step-5--define-routes)
 10. [Step 6 — Create Views (V in MVC)](#step-6--create-views-v-in-mvc)
-11. [Step 7 — Run Migrations](#step-7--run-migrations)
-12. [Step 8 — Run the Application](#step-8--run-the-application)
-13. [Features Summary](#features-summary)
-14. [File Structure Recap](#file-structure-recap)
+11. [Step 7 — Run Migrations & Seed Sample Data](#step-7--run-migrations--seed-sample-data)
+12. [Step 8 — Build Frontend Assets (Vite)](#step-8--build-frontend-assets-vite)
+13. [Step 9 — Run the Application](#step-9--run-the-application)
+14. [Additional Features](#additional-features)
+15. [Features Summary](#features-summary)
+16. [File Structure Recap](#file-structure-recap)
+17. [Quick Reference](#quick-reference)
 
 ---
 
@@ -27,6 +30,7 @@ A step-by-step guide to building a Library Management application using **Larave
 
 - **PHP 8.2+** installed
 - **Composer** (PHP dependency manager) installed
+- **Node.js 18+** and **npm** installed (required for building CSS/JS assets)
 - A code editor (VS Code recommended)
 - A terminal / command prompt
 
@@ -44,6 +48,12 @@ composer create-project laravel/laravel library-app
 
 ```bash
 cd library-app
+```
+
+### Install Node.js dependencies
+
+```bash
+npm install
 ```
 
 ### Generate app encryption key
@@ -67,29 +77,45 @@ php artisan --version
 library-app/
 ├── app/
 │   ├── Http/
-│   │   └── Controllers/       ← Controllers (C)
-│   │       ├── BookController.php
-│   │       └── BorrowingController.php
-│   └── Models/                ← Models (M)
+│   │   ├── Controllers/           ← Controllers (C)
+│   │   │   ├── BookController.php
+│   │   │   └── BorrowingController.php
+│   │   └── Middleware/
+│   │       └── SetLocale.php      ← Language switcher middleware
+│   └── Models/                    ← Models (M)
 │       ├── Book.php
 │       └── Borrowing.php
 ├── database/
-│   └── migrations/            ← Database schema definitions
+│   ├── migrations/                ← Database schema definitions
+│   └── seeders/
+│       ├── BookSeeder.php         ← 15 sample classic books
+│       └── DatabaseSeeder.php
+├── lang/
+│   ├── en.json                    ← English translations
+│   ├── fil.json                   ← Filipino translations
+│   └── ja.json                    ← Japanese translations
 ├── resources/
-│   └── views/                 ← Views (V)
+│   ├── css/
+│   │   └── app.css                ← Tailwind v4 + custom Athenaeum theme
+│   ├── js/
+│   │   └── app.js                 ← Alpine.js entry point
+│   └── views/                     ← Views (V)
 │       ├── layouts/
-│       │   └── app.blade.php
+│       │   └── app.blade.php      ← Master layout with nav + language switcher
 │       ├── books/
 │       │   ├── index.blade.php
 │       │   ├── create.blade.php
 │       │   ├── show.blade.php
 │       │   └── edit.blade.php
-│       └── borrowings/
-│           ├── index.blade.php
-│           └── create.blade.php
+│       ├── borrowings/
+│       │   ├── index.blade.php
+│       │   └── create.blade.php
+│       └── vendor/pagination/
+│           └── tailwind.blade.php ← Custom library-themed pagination
 ├── routes/
-│   └── web.php                ← Route definitions
-├── .env                       ← Environment configuration
+│   └── web.php                    ← Route definitions (CRUD + language switch)
+├── vite.config.js                 ← Vite build configuration
+├── .env                           ← Environment configuration
 └── ...
 ```
 
@@ -580,13 +606,14 @@ The master layout defines the shared HTML structure (navbar, flash messages, foo
 
 ---
 
-## Step 7 — Run Migrations
+## Step 7 — Run Migrations & Seed Sample Data
 
-Create the database tables:
+Create the database tables and populate with 15 classic sample books:
 
 ```bash
 touch database/database.sqlite
 php artisan migrate
+php artisan db:seed
 ```
 
 Expected output:
@@ -599,11 +626,45 @@ INFO  Running migrations.
   0001_01_01_000002_create_jobs_table .................. DONE
   2026_02_26_000001_create_books_table ................. DONE
   2026_02_26_000002_create_borrowings_table ............ DONE
+
+INFO  Seeding database.
+```
+
+The seeder inserts 15 classic books including *To Kill a Mockingbird*, *1984*, *Pride and Prejudice*, *Noli Me Tángere*, *Norwegian Wood*, *Dune*, and more.
+
+To reset and reseed from scratch:
+
+```bash
+php artisan migrate:fresh --seed
 ```
 
 ---
 
-## Step 8 — Run the Application
+## Step 8 — Build Frontend Assets (Vite)
+
+Compile Tailwind CSS v4 and Alpine.js for production:
+
+```bash
+npm run build
+```
+
+Expected output:
+
+```
+✓ built in X.XXs
+dist/assets/app-[hash].css   ~74 kB
+dist/assets/app-[hash].js    ~83 kB
+```
+
+For development with hot-reload:
+
+```bash
+npm run dev
+```
+
+---
+
+## Step 9 — Run the Application
 
 Start the development server:
 
@@ -615,30 +676,134 @@ Open your browser and go to: **http://localhost:8000**
 
 ---
 
+## Additional Features
+
+### Multilingual Support (EN / FIL / JA)
+
+The app supports three languages switchable at runtime using a language switcher in the navigation bar.
+
+**How it works:**
+
+1. User clicks a flag emoji (🇺🇸 EN / 🇵🇭 FIL / 🇯🇵 JA) in the nav dropdown
+2. A GET request is sent to `/language/{locale}`
+3. `SetLocale` middleware reads `session('locale')` on every request and calls `App::setLocale()`
+4. All view strings use the `__('key')` helper which resolves from `lang/{locale}.json`
+
+**Translation files:** `lang/en.json`, `lang/fil.json`, `lang/ja.json` — ~89 keys each
+
+**SetLocale middleware** (`app/Http/Middleware/SetLocale.php`):
+
+```php
+public function handle(Request $request, Closure $next): Response
+{
+    $locale = session('locale', 'en');
+    if (in_array($locale, ['en', 'fil', 'ja'])) {
+        App::setLocale($locale);
+    }
+    return $next($request);
+}
+```
+
+**Language switch route** (`routes/web.php`):
+
+```php
+Route::get('/language/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fil', 'ja'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('language.switch');
+```
+
+---
+
+### Custom "Athenaeum" Design Theme
+
+The app uses a warm, library-inspired color palette built with Tailwind CSS v4's `@theme` block in `resources/css/app.css`.
+
+**Color Tokens:**
+
+| Token              | Description                   |
+|--------------------|-------------------------------|
+| `library-50`       | Near-white warm tint           |
+| `library-100–200`  | Light parchment backgrounds    |
+| `library-600–700`  | Primary action colors (brown)  |
+| `library-800–900`  | Dark text and header shades    |
+| `--color-parchment`| Page background (#fdf8f0)      |
+| `--color-ink`      | Primary text (#2c1810)         |
+| `--color-muted`    | Secondary text (#6b5344)       |
+
+**Component Classes:**
+
+| Class             | Usage                         |
+|-------------------|-------------------------------|
+| `.btn-primary`    | Main action buttons            |
+| `.btn-success`    | Positive actions (add, save)   |
+| `.btn-danger`     | Destructive actions (delete)   |
+| `.btn-warning`    | Neutral warnings (edit)        |
+| `.btn-ghost`      | Subtle links/actions           |
+| `.card`           | Content card containers        |
+| `.form-input`     | Styled text inputs             |
+| `.form-label`     | Input labels                   |
+| `.badge-available`| Green availability badge       |
+| `.badge-borrowed` | Orange borrowed status         |
+| `.badge-overdue`  | Red overdue warning            |
+| `.badge-returned` | Gray returned status           |
+| `.page-title`     | H1 page headings               |
+| `.section-title`  | H2 section headings            |
+
+---
+
+### Custom Pagination
+
+Laravel's built-in pagination view was published and restyled to match the library theme.
+
+**Publish command used:**
+
+```bash
+php artisan vendor:publish --tag=laravel-pagination
+```
+
+The published view at `resources/views/vendor/pagination/tailwind.blade.php` was rewritten with:
+- Active page: `bg-library-700 text-white rounded-lg`
+- Inactive pages: `bg-white border-library-200 text-library-600 rounded-lg`
+- Disabled arrows: `bg-library-50 border-library-100 text-library-300`
+- Mobile view: shows "Page X / Y" counter
+- Desktop view: shows "Showing X to Y of Z results"
+
+---
+
 ## Features Summary
 
-### 1. 📖 Inserting a Book
+### 1. 📖 Managing Books
 
 - Navigate to **Books → Add New Book**
 - Fill in Title, Author, ISBN, Description, and Quantity
-- Submit the form → book is saved to the database
-- **MVC flow:** View (form) → Route → Controller (`store`) → Model (`Book::create`)
+- Edit or delete books from the list or detail page
+- **MVC flow:** View (form) → Route → Controller (`store`/`update`/`destroy`) → Model (`Book`)
 
-### 2. 📚 Borrowing a Book
+### 2. 📚 Borrowing & Returning
 
-- Click **Borrow a Book** or click "Borrow" next to a book
+- Click **Borrow a Book** or "Borrow" next to a book
 - Select a book, enter borrower name, email, and due date
 - Submit → borrowing record is created, available count decreases
-- To **return** a book, click "Return Book" in the Borrowings list
-- **MVC flow:** View (form) → Route → Controller (`store` / `returnBook`) → Model (`Borrowing::create`, `Book::decrement`)
+- Click "Return Book" in the Borrowings list to mark as returned
+- Overdue items are highlighted automatically
+- **MVC flow:** View (form) → Route → Controller (`store` / `returnBook`) → Model (`Borrowing`, `Book`)
 
-### 3. 🔍 Looking Up a Book
+### 3. 🔍 Search & Browse
 
-- On the **Books** page, use the search bar
-- Search by **title**, **author**, or **ISBN**
-- Results are filtered and paginated
+- Use the search bar on the Books page to filter by title, author, or ISBN
+- Results are paginated (10 per page) with a custom library-themed paginator
 - Click a book title to see full details and borrowing history
-- **MVC flow:** View (search form) → Route → Controller (`index` with `?search=`) → Model (`where LIKE`) → View (results)
+- **MVC flow:** View → Route → Controller (`index` with `?search=`) → Model (`where LIKE`) → View
+
+### 4. 🌐 Language Switching
+
+- Click the globe/flag dropdown in the top navigation bar
+- Select 🇺🇸 English, 🇵🇭 Filipino, or 🇯🇵 Japanese
+- All UI text, labels, buttons, and messages change instantly
+- Preference is stored in the session
 
 ---
 
@@ -647,44 +812,65 @@ Open your browser and go to: **http://localhost:8000**
 ```
 library-app/
 ├── app/
-│   ├── Http/Controllers/
-│   │   ├── BookController.php          ← Handles all book CRUD operations
-│   │   └── BorrowingController.php     ← Handles borrowing & returning
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── BookController.php          ← Book CRUD operations
+│   │   │   └── BorrowingController.php     ← Borrow & return logic
+│   │   └── Middleware/
+│   │       └── SetLocale.php               ← Session-based language switcher
 │   └── Models/
-│       ├── Book.php                    ← Book data model + relationships
-│       └── Borrowing.php              ← Borrowing data model + relationships
+│       ├── Book.php                        ← Book model + relationships
+│       └── Borrowing.php                   ← Borrowing model + relationships
 ├── database/
-│   ├── database.sqlite                ← SQLite database file
-│   └── migrations/
-│       ├── 2026_02_26_000001_create_books_table.php
-│       └── 2026_02_26_000002_create_borrowings_table.php
-├── resources/views/
-│   ├── layouts/app.blade.php          ← Master layout
-│   ├── books/
-│   │   ├── index.blade.php            ← List + Search
-│   │   ├── create.blade.php           ← Add book form
-│   │   ├── show.blade.php             ← Book details
-│   │   └── edit.blade.php             ← Edit book form
-│   └── borrowings/
-│       ├── index.blade.php            ← Borrowing list
-│       └── create.blade.php           ← Borrow form
-├── routes/web.php                     ← All route definitions
-└── .env                               ← Database & app configuration
+│   ├── database.sqlite                     ← SQLite database file
+│   ├── migrations/
+│   │   ├── 2026_02_26_000001_create_books_table.php
+│   │   └── 2026_02_26_000002_create_borrowings_table.php
+│   └── seeders/
+│       ├── BookSeeder.php                  ← 15 classic sample books
+│       └── DatabaseSeeder.php             ← Runs all seeders
+├── lang/
+│   ├── en.json                             ← English (~89 keys)
+│   ├── fil.json                            ← Filipino (~89 keys)
+│   └── ja.json                             ← Japanese (~89 keys)
+├── resources/
+│   ├── css/app.css                         ← Tailwind v4 + Athenaeum theme
+│   ├── js/app.js                           ← Alpine.js bootstrap
+│   └── views/
+│       ├── layouts/app.blade.php           ← Master layout + language dropdown
+│       ├── books/
+│       │   ├── index.blade.php             ← Book list + search
+│       │   ├── create.blade.php            ← Add book form
+│       │   ├── show.blade.php              ← Book detail
+│       │   └── edit.blade.php             ← Edit book form
+│       ├── borrowings/
+│       │   ├── index.blade.php             ← Borrowing list
+│       │   └── create.blade.php            ← Borrow form
+│       └── vendor/pagination/
+│           └── tailwind.blade.php          ← Custom themed pagination
+├── routes/web.php                          ← All routes (CRUD + language switch)
+├── vite.config.js                          ← Vite + Tailwind build config
+└── .env                                    ← Database & app configuration
 ```
 
 ---
 
-## Quick Reference — Artisan Commands Used
+## Quick Reference
 
-| Command                          | Purpose                              |
-|----------------------------------|--------------------------------------|
+| Command | Purpose |
+|---------|---------|
 | `composer create-project laravel/laravel library-app` | Create new project |
-| `php artisan key:generate`       | Generate encryption key              |
-| `php artisan migrate`            | Run database migrations              |
-| `php artisan serve`              | Start development server             |
-| `php artisan route:list`         | View all registered routes           |
-| `php artisan migrate:status`     | Check migration status               |
-
----
+| `npm install` | Install Node.js dependencies |
+| `php artisan key:generate` | Generate encryption key |
+| `php artisan migrate` | Run database migrations |
+| `php artisan db:seed` | Seed all seeders |
+| `php artisan db:seed --class=BookSeeder` | Run only BookSeeder |
+| `php artisan migrate:fresh --seed` | Reset DB and reseed |
+| `npm run build` | Compile assets for production |
+| `npm run dev` | Start Vite dev server (hot-reload) |
+| `php artisan serve` | Start Laravel development server |
+| `php artisan route:list` | View all registered routes |
+| `php artisan migrate:status` | Check migration status |
+| `php artisan vendor:publish --tag=laravel-pagination` | Publish pagination views |
 
 **Happy Coding! 🎉**
