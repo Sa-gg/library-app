@@ -13,8 +13,9 @@ A simple Library Management System built with **Laravel 12** using the MVC archi
 | 1  | Curio, Josh Nathan     |
 | 2  | Gilera, Rowena         |
 | 3  | Gromea, Nehje John     |
-| 4  | Sagum, Patrick         |
-| 5  | Sildora, Jegrick       |
+| 4  | Guanzon, Jurriel       |
+| 5  | Sagum, Patrick         |
+| 6  | Sildora, Jegrick       |
 
 ---
 
